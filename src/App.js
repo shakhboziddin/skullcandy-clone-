@@ -1,25 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from 'react'
+import { AuthContext } from './context/AuthContext'
+import { signOut } from 'firebase/auth'
+import { auth } from './Firebase/FirebaseConfig'
 
 function App() {
+  const { currentUser } = useContext(AuthContext)
+  console.log(currentUser)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <img src={currentUser.photoURL} alt="" />
+      <h1>{currentUser.displayname}</h1>
+      <button onClick={() => signOut(auth)}>signout</button>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
