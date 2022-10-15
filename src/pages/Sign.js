@@ -23,7 +23,7 @@ function Sign() {
 
     return (
         <div>
-            <form onSubmit={signIn}>
+            <form onSubmit={signIn} className="pt-[200px]">
                 <input type="email" name="email" placeholder='Email' />
                 <input type="passwprd" name='password' placeholder='Password' />
                 <button type='submut'>Sign in</button>

@@ -10,10 +10,10 @@ import { async } from '@firebase/util'
 function Register() {
     const navigate = useNavigate()
     const [err, setErr] = useState(false)
+    const [progress, setProgress] = useState()
     const CreateAcc = async (e) => {
         e.preventDefault()
-        const firstName = e.target[0].value
-        const lastName = e.target[1].value
+        const displayName = e.target[0].value
         const email = e.target[2].value
         const password = e.target[3].value
         const file = e.target[4].files[0]
@@ -23,13 +23,13 @@ function Register() {
         // localStorage.setItem("firstName", firstName)
         // localStorage.setItem("lastName", lastName)
 
-        const storageRef = ref(storage, firstName)
+        const storageRef = ref(storage, displayName)
         const upload = uploadBytesResumable(storageRef, file)
         upload.on('state_changed',
 
             (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('upload is ' + Math.floor(progress) + '% done')
+                setProgress(snapshot.bytesTransferred / snapshot.totalBytes * 100);
+                // console.log('upload is ' + Math.floor(progress) + '% done')/
             },
 
             (error) => {
@@ -38,12 +38,11 @@ function Register() {
             () => {
                 getDownloadURL(upload.snapshot.ref).then(async (downloadURL) => {
                     await updateProfile(res.user, {
-                        firstName,
+                        displayName,
                         photoURL: downloadURL
                     })
                     await setDoc(doc(db, 'users', res.user.uid), {
-                        displayName: firstName,
-                        lastName: lastName,
+                        displayName: displayName,
                         password: password,
                         photoURL: downloadURL
                     })
@@ -68,6 +67,10 @@ function Register() {
                     <input type="password" placeholder='Password' name='password' />
                     <input type="file" name="file" />
                     <button type='submit'>Submit</button>
+
+                    <div style={{ width: progress }}>
+                        progress is {Math.floor(progress)} %
+                    </div>
                 </div>
             </form>
         </div>
